@@ -19,15 +19,10 @@ function Form() {
     dateArr.splice(0, 4, "2", "0", "0", "0").join("");
     return dateArr.join("");
   };
-  const addBirthdate = e => {
-    let userBirthDate = e.target.value;
-    const formattedDate = format(userBirthDate);
-    console.log(formattedDate);
-    setBirthdate(formattedDate);
-  };
 
   const handleUpload = () => {
-    console.log(`image ${image}`);
+    //mask year before upload
+    const formattedDate = format(birthdate);
     const uploadTask = storage
       .ref(`images/${image ? image.name : "default"}`)
       .put(image);
@@ -54,7 +49,7 @@ function Form() {
           .then(url => {
             //post image inside db
             db.collection("BirthdayList").add({
-              birthdate: new Date(birthdate),
+              birthdate: new Date(formattedDate),
               name: name,
               image: url
             });
@@ -82,8 +77,7 @@ function Form() {
         name="birthdate"
         value={birthdate}
         required
-        // onChange={e => setBirthdate(e.target.value)}
-        onChange={addBirthdate}
+        onChange={e => setBirthdate(e.target.value)}
       />
       <input type="file" onChange={handleChange} />
       <button
